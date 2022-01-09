@@ -48,7 +48,7 @@ export default ({ app }: { app: express.Application }) => {
         next(err);
     });
 
-    /// error handlers asdfasfd
+    /// error handlers
     app.use((err, req, res, next) => {
         //global error handlers
         //all errors will be handled here
