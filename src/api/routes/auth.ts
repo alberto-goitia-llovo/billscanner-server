@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 // import middlewares from '../middlewares';
 const route = Router();
 
+//Borrar este comentario
 export default (app: Router) => {
     app.use('/auth', route);
     route.get('', (req: Request, res: Response) => {
