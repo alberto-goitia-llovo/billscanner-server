@@ -9,6 +9,7 @@
         "baseUrl": ".",
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "paths": {
             "@/*": [
                 "./src/*"

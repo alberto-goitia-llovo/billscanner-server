@@ -10,6 +10,12 @@ const route = Router();
 
 export default (app: Router) => {
     app.use('/auth', route);
+    route.post('/cosas', (req, res) => {
+        console.log('req.params', req.params)
+        console.log('req.body', req.body)
+        console.log('req.query', req.query)
+        res.json({ cosas: "aquí hay cosas" })
+    })
 
     route.post(
         '/signup',
@@ -20,14 +26,20 @@ export default (app: Router) => {
                 password: Joi.string().required(),
             }),
         }),
+        // (req, res) => { console.log("req.body", req.body) },
         async (req: Request, res: Response, next: NextFunction) => {
+            console.log("ESAMOS EN SIGNUP")
+            // console.log('res', res)
+            // return res.status(200).json({ user: "1234", token: "4356" });
             const logger: Logger = Container.get('logger');
             logger.debug('Calling Sign-Up endpoint with body: %o', req.body);
             try {
+                // const authServiceInstance = Container.get(AuthService);
                 const authServiceInstance = Container.get(AuthService);
                 const { user, token } = await authServiceInstance.SignUp(req.body as IUserInputDTO);
                 return res.status(201).json({ user, token });
             } catch (e) {
+                console.log(e)
                 logger.error('🔥 error: %o', e);
                 return next(e);
             }

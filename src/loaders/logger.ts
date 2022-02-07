@@ -1,5 +1,7 @@
 import winston from 'winston';
-import config from '../config/index';
+import config from '@/config';
+import { Service, Inject, Container } from 'typedi';
+
 
 const transports = [];
 if (process.env.NODE_ENV !== 'development') {
@@ -32,3 +34,27 @@ const LoggerInstance = winston.createLogger({
 });
 
 export default LoggerInstance;
+
+
+// class LoggerInstance {
+//     constructor(
+//     ) {
+//     }
+
+//     public silly(text: string) {
+//         console.log("SILLY", text);
+//     }
+
+//     public info(text: string) {
+//         console.log(`INFO`, text)
+//     }
+
+//     public debug(text: string) {
+//         console.log(`DEBUG`, text)
+//     }
+
+//     public error(text: string) {
+//         console.log(`ERROR`, text)
+//     }
+// }
+// export default new LoggerInstance

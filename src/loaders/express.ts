@@ -3,6 +3,7 @@ import cors from 'cors';
 import { OpticMiddleware } from '@useoptic/express-middleware';
 import routes from '@/api';
 import config from '@/config';
+import middlewares from '@/api/middlewares';
 export default ({ app }: { app: express.Application }) => {
     /**
      * Health Check endpoints
@@ -30,10 +31,17 @@ export default ({ app }: { app: express.Application }) => {
     // app.use(require('method-override')());
 
     // Transforms the raw string of req.body into json
+    // app.use(middleware);
     app.use(express.json());
     app.use(formatResponse)
+
+
     // Load API routes
-    app.use(config.api.prefix, routes());
+    // app.use(config.api.prefix, routes());
+    // app.use('/api', (req, res) => {
+    //     console.log("ESTOY EN APIII")
+    // })
+    app.use(config.api.prefix, routes())
 
     // API Documentation
     app.use(OpticMiddleware({
@@ -42,6 +50,7 @@ export default ({ app }: { app: express.Application }) => {
 
     /// catch 404 and forward to error handler
     app.use((req, res, next) => {
+        // console.log('req', req)
         const err = new Error('Not Found');
         console.log("NOT FOUND")
         err['status'] = 404;
@@ -79,6 +88,12 @@ function formatResponse(req, res, next) {
         }
         originJson.call(res, { ...fixedResponse })
     }
+    next()
+}
+
+function middleware(req, res, next) {
+    console.log('req.body', req.body)
+    console.log('req.params', req.params)
     next()
 }
 

@@ -1,6 +1,6 @@
-import { Service, Inject } from 'typedi';
+import 'reflect-metadata'; // We need this in order to use @Decorators
+import { Service, Inject, Container } from 'typedi';
 import jwt from 'jsonwebtoken';
-// import MailerService from './mailer';
 import config from '@/config';
 import argon2 from 'argon2';
 import { randomBytes } from 'crypto';
@@ -8,11 +8,11 @@ import { IUser, IUserInputDTO } from '@/interfaces/IUser';
 import { EventDispatcher, EventDispatcherInterface } from '@/decorators/eventDispatcher';
 import events from '@/subscribers/events';
 
+
 @Service()
 export default class AuthService {
     constructor(
         @Inject('userModel') private userModel: Models.UserModel,
-        // private mailer: MailerService,
         @Inject('logger') private logger,
         @EventDispatcher() private eventDispatcher: EventDispatcherInterface,
     ) {
@@ -52,8 +52,8 @@ export default class AuthService {
             if (!userRecord) {
                 throw new Error('User cannot be created');
             }
-            //   this.logger.silly('Sending welcome email');
-            //   await this.mailer.SendWelcomeEmail(userRecord);
+            // this.logger.silly('Sending welcome email');
+            // await this.mailer.SendWelcomeEmail(userRecord);
 
             this.eventDispatcher.dispatch(events.user.signUp, { user: userRecord });
 
