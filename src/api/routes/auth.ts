@@ -10,12 +10,6 @@ const route = Router();
 
 export default (app: Router) => {
     app.use('/auth', route);
-    route.post('/cosas', (req, res) => {
-        console.log('req.params', req.params)
-        console.log('req.body', req.body)
-        console.log('req.query', req.query)
-        res.json({ cosas: "aquí hay cosas" })
-    })
 
     route.post(
         '/signup',
@@ -39,7 +33,6 @@ export default (app: Router) => {
                 const { user, token } = await authServiceInstance.SignUp(req.body as IUserInputDTO);
                 return res.status(201).json({ user, token });
             } catch (e) {
-                console.log(e)
                 logger.error('🔥 error: %o', e);
                 return next(e);
             }
@@ -61,7 +54,7 @@ export default (app: Router) => {
                 const { email, password } = req.body;
                 const authServiceInstance = Container.get(AuthService);
                 const { user, token } = await authServiceInstance.SignIn(email, password);
-                return res.json({ user, token }).status(200);
+                return res.status(200).json({ user, token });
             } catch (e) {
                 logger.error('🔥 error: %o', e);
                 return next(e);

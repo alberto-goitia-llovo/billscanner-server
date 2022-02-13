@@ -65,6 +65,7 @@ export default ({ app }: { app: express.Application }) => {
         res.json({
             error: {
                 message: err.message,
+                data: err
             },
         });
     });
@@ -83,7 +84,7 @@ function formatResponse(req, res, next) {
     res.json = (data, a, b) => {
         const fixedResponse = {
             status: res.statusCode,
-            data: data.error ? null : data,
+            data: data?.error ? data.error.data : data,
             message: data.error?.message || null
         }
         originJson.call(res, { ...fixedResponse })

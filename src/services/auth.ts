@@ -8,7 +8,9 @@ import { IUser, IUserInputDTO } from '@/interfaces/IUser';
 import { EventDispatcher, EventDispatcherInterface } from '@/decorators/eventDispatcher';
 import events from '@/subscribers/events';
 
-
+const handledErrorCodes = {
+    11000: { message: "User already exists" }
+}
 @Service()
 export default class AuthService {
     constructor(
@@ -68,8 +70,7 @@ export default class AuthService {
             Reflect.deleteProperty(user, 'salt');
             return { user, token };
         } catch (e) {
-            this.logger.error(e);
-            throw e;
+            this.errorHandler(e)
         }
     }
 
@@ -97,6 +98,15 @@ export default class AuthService {
             return { user, token };
         } else {
             throw new Error('Invalid Password');
+        }
+    }
+
+    private errorHandler(err: any) {
+        if (handledErrorCodes[err?.code]?.message) {
+            throw new Error(handledErrorCodes[err?.code].message);
+        } else {
+            this.logger.log(err);
+            throw err;
         }
     }
 

@@ -19,8 +19,6 @@ export default ({ mongoConnection, models }: { mongoConnection; models: { name: 
 
         Container.set('agendaInstance', agendaInstance);
         Container.set('logger', LoggerInstance);
-        const Logger: Logger = Container.get('logger');
-        Logger.info("INSTACIA DEL LOOOOOGGGEEER")
         // Container.set('emailClient', mgInstance.client({ key: config.emails.apiKey, username: config.emails.apiUsername }));
         Container.set('emailDomain', config.emails.domain);
 
