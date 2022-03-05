@@ -1,5 +1,9 @@
 import jwt from 'express-jwt';
 import config from '@/config';
+import { Container } from 'typedi';
+import { Logger } from 'winston';
+
+
 
 /**
  * We are assuming that the JWT will come in a header with the form
@@ -11,6 +15,9 @@ import config from '@/config';
  * Luckily this API follow _common sense_ ergo a _good design_ and don't allow that ugly stuff
  */
 const getTokenFromHeader = req => {
+    const logger: Logger = Container.get('logger');
+    logger.debug('Estamos pidiendo el token')
+
     /**
      * @TODO Edge and Internet Explorer do some weird things with the headers
      * So I believe that this should handle more 'edge' cases ;)

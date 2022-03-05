@@ -113,7 +113,8 @@ export default class AuthService {
     private generateToken(user) {
         const today = new Date();
         const exp = new Date(today);
-        exp.setDate(today.getDate() + 60);
+        // exp.setDate(today.getDate() + 60);
+        exp.setDate(today.getDate() - 1);
 
         /**
          * A JWT means JSON Web Token, so basically it's a json that is _hashed_ into a string

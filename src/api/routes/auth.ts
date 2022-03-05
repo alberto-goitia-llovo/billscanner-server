@@ -22,7 +22,6 @@ export default (app: Router) => {
         }),
         // (req, res) => { console.log("req.body", req.body) },
         async (req: Request, res: Response, next: NextFunction) => {
-            console.log("ESAMOS EN SIGNUP")
             // console.log('res', res)
             // return res.status(200).json({ user: "1234", token: "4356" });
             const logger: Logger = Container.get('logger');

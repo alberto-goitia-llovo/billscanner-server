@@ -41,6 +41,9 @@ export default ({ app }: { app: express.Application }) => {
     // app.use('/api', (req, res) => {
     //     console.log("ESTOY EN APIII")
     // })
+
+    //TODO: add JWT authentication middleware (signup and signin should not be affected)
+
     app.use(config.api.prefix, routes())
 
     // API Documentation
@@ -50,6 +53,7 @@ export default ({ app }: { app: express.Application }) => {
 
     /// catch 404 and forward to error handler
     app.use((req, res, next) => {
+        console.log('URL', req.url)
         // console.log('req', req)
         const err = new Error('Not Found');
         console.log("NOT FOUND")
@@ -61,10 +65,11 @@ export default ({ app }: { app: express.Application }) => {
     app.use((err, req, res, next) => {
         //global error handlers
         //all errors will be handled here
+        let message = err.name != "Error" ? err.message : "There was an error";
         res.status(err.status || 500);
         res.json({
             error: {
-                message: err.message,
+                message: message,
                 data: err
             },
         });

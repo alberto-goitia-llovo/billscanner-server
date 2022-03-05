@@ -6,6 +6,6 @@ export default (app: Router) => {
     app.use('/api', route);
 
     route.get('', (req: Request, res: Response) => {
-        return res.json({ message: "Estas usando la api, si, campeón" }).status(200);
+        return res.json({ message: "Hi! nothing here, sorry" }).status(200);
     });
 };
