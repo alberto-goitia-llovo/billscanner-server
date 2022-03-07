@@ -114,7 +114,7 @@ export default class AuthService {
         const today = new Date();
         const exp = new Date(today);
         // exp.setDate(today.getDate() + 60);
-        exp.setDate(today.getDate() - 1);
+        exp.setDate(today.getDate() + 60);
 
         /**
          * A JWT means JSON Web Token, so basically it's a json that is _hashed_ into a string
@@ -126,14 +126,17 @@ export default class AuthService {
          * more information here: https://softwareontheroad.com/you-dont-need-passport
          */
         this.logger.silly(`Sign JWT for userId: ${user._id}`);
-        return jwt.sign(
+        let token = jwt.sign(
             {
                 _id: user._id, // We are gonna use this in the middleware 'isAuth'
                 role: user.role,
                 name: user.name,
                 exp: exp.getTime() / 1000,
             },
-            config.jwtSecret
+            config.jwtSecret,
+            { algorithm: config.jwtAlgorithm as jwt.Algorithm }
         );
+        console.log('token', token)
+        return token;
     }
 }

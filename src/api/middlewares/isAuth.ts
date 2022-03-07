@@ -17,11 +17,15 @@ import { Logger } from 'winston';
 const getTokenFromHeader = req => {
     const logger: Logger = Container.get('logger');
     logger.debug('Estamos pidiendo el token')
+    console.log("estamos pidiendo el tokeeeen")
 
     /**
      * @TODO Edge and Internet Explorer do some weird things with the headers
      * So I believe that this should handle more 'edge' cases ;)
      */
+    console.log('req.headers.authorization', req.headers.authorization)
+    console.log('req.headers.authorization.split(\' \')[1];', req.headers.authorization.split(' ')[1]);
+    console.log('config.jwtAlgorithm', config.jwtAlgorithm)
     if (
         (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Token') ||
         (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer')

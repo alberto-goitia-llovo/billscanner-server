@@ -5,7 +5,7 @@ const route = Router();
 export default (app: Router) => {
     app.use('/test', route);
 
-    route.get('/testdata', (req: Request, res: Response) => {
+    route.get('/testdata', middleware.isAuth, (req: Request, res: Response) => {
         return res.status(200).json("This is some piece of data");
     });
 };

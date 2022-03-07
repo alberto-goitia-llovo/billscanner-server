@@ -5,7 +5,6 @@
   "dependencies": {
     "@types/argon2": "^0.15.0",
     "@types/express-jwt": "^6.0.4",
-    "@types/jsonwebtoken": "^8.5.8",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^17.0.0",
     "@useoptic/express-middleware": "^0.0.5",
@@ -26,6 +25,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
+    "@types/jsonwebtoken": "^8.5.8",
     "express": "^4.17.1",
     "reflect-metadata": "^0.1.13",
     "tsconfig-paths": "^3.12.0",
