@@ -10,7 +10,6 @@ import test from './routes/test';
 export default () => {
     const app = Router();
 
-    console.log('esto es el config.environment', config.environment)
     if (config.environment == 'development') {
         test(app);
     }

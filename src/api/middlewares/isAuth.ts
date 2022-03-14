@@ -1,9 +1,5 @@
 import jwt from 'express-jwt';
 import config from '@/config';
-import { Container } from 'typedi';
-import { Logger } from 'winston';
-
-
 
 /**
  * We are assuming that the JWT will come in a header with the form
@@ -15,17 +11,10 @@ import { Logger } from 'winston';
  * Luckily this API follow _common sense_ ergo a _good design_ and don't allow that ugly stuff
  */
 const getTokenFromHeader = req => {
-    const logger: Logger = Container.get('logger');
-    logger.debug('Estamos pidiendo el token')
-    console.log("estamos pidiendo el tokeeeen")
-
     /**
      * @TODO Edge and Internet Explorer do some weird things with the headers
      * So I believe that this should handle more 'edge' cases ;)
      */
-    console.log('req.headers.authorization', req.headers.authorization)
-    console.log('req.headers.authorization.split(\' \')[1];', req.headers.authorization.split(' ')[1]);
-    console.log('config.jwtAlgorithm', config.jwtAlgorithm)
     if (
         (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Token') ||
         (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer')

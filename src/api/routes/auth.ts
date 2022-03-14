@@ -27,7 +27,6 @@ export default (app: Router) => {
             const logger: Logger = Container.get('logger');
             logger.debug('Calling Sign-Up endpoint with body: %o', req.body);
             try {
-                // const authServiceInstance = Container.get(AuthService);
                 const authServiceInstance = Container.get(AuthService);
                 const { user, token } = await authServiceInstance.SignUp(req.body as IUserInputDTO);
                 return res.status(201).json({ user, token });
