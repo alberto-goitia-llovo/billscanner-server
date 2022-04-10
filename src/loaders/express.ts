@@ -53,8 +53,6 @@ export default ({ app }: { app: express.Application }) => {
 
     /// catch 404 and forward to error handler
     app.use((req, res, next) => {
-        console.log('URL', req.url)
-        // console.log('req', req)
         const err = new Error('Not Found');
         console.log("NOT FOUND")
         err['status'] = 404;
@@ -65,7 +63,10 @@ export default ({ app }: { app: express.Application }) => {
     app.use((err, req, res, next) => {
         //global error handlers
         //all errors will be handled here
-        let message = err.name != "Error" ? err.message : "There was an error";
+
+        if (err.constructor.name != 'Error') console.log('err', err) //only print if it's an unexpected error (something that really broke)
+
+        let message = err.name == "Error" ? err.message : "Something was wrong";
         res.status(err.status || 500);
         res.json({
             error: {
@@ -85,6 +86,7 @@ export default ({ app }: { app: express.Application }) => {
  * @param next 
  */
 function formatResponse(req, res, next) {
+    // console.log('req', req)
     const originJson = res.json
     res.json = (data, a, b) => {
         const fixedResponse = {

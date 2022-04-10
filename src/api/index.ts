@@ -3,6 +3,7 @@ import config from '@/config'
 
 import auth from './routes/auth';
 import test from './routes/test';
+import bills from './routes/bills';
 // import user from './routes/user';
 // import agendash from './routes/agendash';
 
@@ -15,6 +16,7 @@ export default () => {
     }
 
     auth(app);
+    bills(app);
     // user(app);
     // agendash(app);
     return app
