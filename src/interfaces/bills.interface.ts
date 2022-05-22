@@ -12,5 +12,4 @@ export interface IBill {
     user_id: number,
 };
 
-export interface IGetBillsReq extends Request { }
-export interface IUpdateBillsReq extends Request<{ bills: IBill[] }> { }
+export interface IBillDTO extends Array<IBill> { };

@@ -1,30 +1,27 @@
 import { createPool, Pool } from 'mysql';
-import config from '@/config';
-const dataSource = config.mySqlDataSource;
+
 
 export default new class MySqlConnector {
     private pool: Pool;
 
     constructor() { }
 
-    public async init(): Promise<Pool> {
+    public async init(mySqlConfig): Promise<Pool> {
         try {
             this.pool = createPool({
-                connectionLimit: dataSource.DB_CONNECTION_LIMIT,
-                host: dataSource.DB_HOST,
-                user: dataSource.DB_USER,
-                password: dataSource.DB_PASSWORD,
-                database: dataSource.DB_DATABASE,
+                connectionLimit: mySqlConfig.DB_CONNECTION_LIMIT,
+                host: mySqlConfig.DB_HOST,
+                user: mySqlConfig.DB_USER,
+                password: mySqlConfig.DB_PASSWORD,
+                database: mySqlConfig.DB_DATABASE,
             });
 
-            console.debug('MySql Adapter Pool generated successfully');
             return this.pool;
         } catch (error) {
-            console.log('error', error)
             throw new Error('failed to initialized pool')
         }
     };
-    public async executeStatement<T>(query: string, params: string[] | Object): Promise<T> {
+    public async executeStatement<T>(query: string, params: string[] | Object | null = null): Promise<T> {
         try {
             if (!this.pool) throw new Error('Pool was not created. Ensure pool is created when running the app.');
             return new Promise<T>((resolve, reject) => {
@@ -34,7 +31,6 @@ export default new class MySqlConnector {
                 });
             });
         } catch (error) {
-            console.error('[mysql.connector][execute][Error]: ', error);
             throw new Error('failed to execute MySQL query');
         }
     };

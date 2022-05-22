@@ -7,5 +7,6 @@
   "ignore": [
     "src/**/*.spec.ts"
   ],
+  "_comment": "node ./dist/app.js",
   "exec": "ts-node -r tsconfig-paths/register --transpile-only ./src/app.ts"
 }

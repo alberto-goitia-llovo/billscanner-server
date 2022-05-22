@@ -4,6 +4,7 @@ import { OpticMiddleware } from '@useoptic/express-middleware';
 import routes from '@/api';
 import config from '@/config';
 import middlewares from '@/api/middlewares';
+import 'express-async-errors';
 export default ({ app }: { app: express.Application }) => {
     /**
      * Health Check endpoints

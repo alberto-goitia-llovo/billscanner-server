@@ -15,7 +15,7 @@ const handledErrorCodes = {
 export default class AuthService {
     constructor(
         @Inject('userModel') private userModel: Models.UserModel,
-        @Inject('logger') private logger,
+        @Inject('logger') private logger: Utils.Logger,
         @EventDispatcher() private eventDispatcher: EventDispatcherInterface,
     ) {
     }
