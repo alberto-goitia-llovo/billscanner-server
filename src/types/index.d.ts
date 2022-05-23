@@ -1,6 +1,7 @@
 import { Document, Model } from 'mongoose';
 import { IUser } from '@/interfaces/IUser';
 import BillsModel from '@/models/mysql/bills.model';
+import UserModel from '@/models/mysql/user.model';
 import * as winston from 'winston';
 declare global {
     namespace Express {
@@ -10,7 +11,7 @@ declare global {
     }
 
     namespace Models {
-        export type UserModel = Model<IUser & Document>;
+        export type UserModel = typeof UserModel;
         export type Bills = typeof BillsModel;
     }
 

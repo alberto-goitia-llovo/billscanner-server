@@ -25,7 +25,7 @@ export default new class BillsModel {
             VALUES
             ${arrayString(bills, params)}
             ON DUPLICATE KEY UPDATE
-            ${updateOnDupString(params)}
+            ${updateOnDupString(params)};
             `
             console.log('query', query)
             // const result = await db.executeStatement<any>(query);

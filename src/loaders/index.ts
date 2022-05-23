@@ -14,7 +14,7 @@ export default async ({ expressApp }) => {
 
     await dependencyInjectorLoader({
         models: [
-            { name: 'userModel', model: require('../models/user').default },
+            { name: 'userModel', model: require('../models/mysql/user.model').default },
             { name: 'billsModel', model: require('../models/mysql/bills.model').default },
         ],
     });

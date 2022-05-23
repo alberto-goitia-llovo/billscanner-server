@@ -26,11 +26,20 @@ export default class AuthService {
             this.logger.silly('Hashing password');
             const hashedPassword = await argon2.hash(userInputDTO.password, { salt });
             this.logger.silly('Creating user db record');
-            const userRecord = await this.userModel.create({
-                ...userInputDTO,
-                salt: salt.toString('hex'),
+            // const userRecord = await this.userModel.create({
+            //     ...userInputDTO,
+            //     salt: salt.toString('hex'),
+            //     password: hashedPassword,
+            // });
+            let new_user_data = {
+                email: userInputDTO.email,
+                name: userInputDTO.name,
                 password: hashedPassword,
-            });
+                salt: salt.toString('hex')
+            };
+            new_user_data['salt'] = salt.toString('hex');
+            new_user_data['password'] = hashedPassword;
+            const userRecord = await this.userModel.createNewUser(new_user_data)
             this.logger.silly('Generating JWT');
             const token = this.generateToken(userRecord);
 
@@ -58,7 +67,7 @@ export default class AuthService {
     }
 
     public async SignIn(email: string, password: string): Promise<{ user: IUser; token: string }> {
-        const userRecord = await this.userModel.findOne({ email });
+        const userRecord = await this.userModel.findOne(email);
         if (!userRecord) {
             throw new Error('User not registered');
         }

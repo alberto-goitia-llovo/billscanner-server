@@ -8,5 +8,5 @@
     "src/**/*.spec.ts"
   ],
   "exec": "npm run build && node ./dist/app.js",
-  "_comment": "ts-node -r tsconfig-paths/register --transpile-only ./src/app.ts"
+  "_exec": "ts-node -r tsconfig-paths/register --transpile-only ./src/app.ts"
 }

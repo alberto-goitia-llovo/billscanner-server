@@ -9,8 +9,9 @@ import { Logger } from 'winston';
 const route = Router();
 
 export default (app: Router) => {
-    app.use('/auth', route);
+    const authServiceInstance = Container.get(AuthService);
 
+    app.use('/auth', route);
     route.post(
         '/signup',
         celebrate({
@@ -27,7 +28,6 @@ export default (app: Router) => {
             const logger: Logger = Container.get('logger');
             logger.debug('Calling Sign-Up endpoint with body: %o', req.body);
             try {
-                const authServiceInstance = Container.get(AuthService);
                 const { user, token } = await authServiceInstance.SignUp(req.body as IUserInputDTO);
                 return res.status(201).json({ user, token });
             } catch (e) {
@@ -50,7 +50,6 @@ export default (app: Router) => {
             logger.debug('Calling Sign-In endpoint with body: %o', req.body);
             try {
                 const { email, password } = req.body;
-                const authServiceInstance = Container.get(AuthService);
                 const { user, token } = await authServiceInstance.SignIn(email, password);
                 return res.status(200).json({ user, token });
             } catch (e) {
