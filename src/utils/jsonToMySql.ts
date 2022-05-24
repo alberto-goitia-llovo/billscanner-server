@@ -5,11 +5,12 @@ export function bracketsToParenthesis(array) {
 export function arrayString(array, keys) {
     let string = '';
     for (let object of array) {
-        let values = []
+        string += '\n(';
         for (let key of keys) {
-            values.push((object[key] != undefined) ? object[key] : null);
+            string += `'${object[key]}',`;
         }
-        string += '\n' + bracketsToParenthesis(values);
+        string = string.slice(0, -1);
+        string += ')';
     }
     return string;
 }

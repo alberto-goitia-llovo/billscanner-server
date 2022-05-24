@@ -10,13 +10,10 @@ export default new class BillsModel {
         try {
             let params = keys<INewUser>();
             console.log('params', params)
-            let statement = `
-            INSERT INTO ${TABLE} (${params})
-            VALUES
-            ${arrayString([new_user_data], params)}
-            `;
-            // console.log('statement', statement)
-            // return;
+            // let insertQuery = 'INSERT INTO ?? (??,??) VALUES (?,?)';
+            // let query = mysql.format(insertQuery,["todo","user","notes",data.user,data.value]);
+            let statement = `INSERT INTO ${TABLE} (${params})\nVALUES${arrayString([new_user_data], params)}`;
+            console.log('statement', statement)
             const result = await db.executeStatement<any>(statement);
             console.log('result', result)
             return result;
