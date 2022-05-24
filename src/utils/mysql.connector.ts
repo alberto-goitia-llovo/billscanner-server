@@ -13,7 +13,10 @@ export default new class MySqlConnector {
                 host: mySqlConfig.DB_HOST,
                 user: mySqlConfig.DB_USER,
                 password: mySqlConfig.DB_PASSWORD,
-                database: mySqlConfig.DB_DATABASE,
+            });
+            //test connection
+            this.pool.getConnection(function (err, connection) {
+                if (err) throw err; // not connected!
             });
 
             return this.pool;

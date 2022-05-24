@@ -3,10 +3,10 @@ export function bracketsToParenthesis(array) {
 }
 
 export function arrayString(array, keys) {
-    let string = ''
+    let string = '';
     for (let object of array) {
         let values = []
-        for (let key in keys) {
+        for (let key of keys) {
             values.push((object[key] != undefined) ? object[key] : null);
         }
         string += '\n' + bracketsToParenthesis(values);
