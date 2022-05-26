@@ -12,7 +12,7 @@ CREATE TABLE user (
     salt VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
-    CONSTRAINT unique_email_pass UNIQUE (email, password)
+    CONSTRAINT unique_name_email UNIQUE (name, email)
 );
 
 CREATE TABLE category (

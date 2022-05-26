@@ -19,7 +19,9 @@ export default new class MySqlConnector {
             this.pool.getConnection(function (err, connection) {
                 if (err) throw err; // not connected!
             });
-
+            this.pool.query('SELECT * FROM bill', function (error, results, fields) {
+                if (error) throw error; //no access to tables!
+            });
             return this.pool;
         } catch (error) {
             throw new Error('failed to initialized pool')
