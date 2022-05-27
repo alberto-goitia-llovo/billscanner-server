@@ -21,19 +21,9 @@ export default (app: Router) => {
                 password: Joi.string().required(),
             }),
         }),
-        // (req, res) => { console.log("req.body", req.body) },
-        async (req: Request, res: Response, next: NextFunction) => {
-            // console.log('res', res)
-            // return res.status(200).json({ user: "1234", token: "4356" });
-            const logger: Logger = Container.get('logger');
-            logger.debug('Calling Sign-Up endpoint with body: %o', req.body);
-            try {
-                const { user, token } = await authServiceInstance.SignUp(req.body as IUserInputDTO);
-                return res.status(201).json({ user, token });
-            } catch (e) {
-                logger.error('🔥 error: %o', e);
-                return next(e);
-            }
+        async (req: Request, res: Response) => {
+            const { user, token } = await authServiceInstance.SignUp(req.body as IUserInputDTO);
+            return res.status(201).json({ user, token });
         },
     );
 
@@ -45,17 +35,10 @@ export default (app: Router) => {
                 password: Joi.string().required(),
             }),
         }),
-        async (req: Request, res: Response, next: NextFunction) => {
-            const logger: Logger = Container.get('logger');
-            logger.debug('Calling Sign-In endpoint with body: %o', req.body);
-            try {
-                const { email, password } = req.body;
-                const { user, token } = await authServiceInstance.SignIn(email, password);
-                return res.status(200).json({ user, token });
-            } catch (e) {
-                logger.error('🔥 error: %o', e);
-                return next(e);
-            }
+        async (req: Request, res: Response) => {
+            const { email, password } = req.body;
+            const { user, token } = await authServiceInstance.SignIn(email, password);
+            return res.status(200).json({ user, token });
         },
     );
 
@@ -68,15 +51,7 @@ export default (app: Router) => {
      * emitted for the session and add it to a black list.
      * It's really annoying to develop that but if you had to, please use Redis as your data store
      */
-    route.post('/logout', middlewares.isAuth, (req: Request, res: Response, next: NextFunction) => {
-        const logger: Logger = Container.get('logger');
-        logger.debug('Calling Sign-Out endpoint with body: %o', req.body);
-        try {
-            //@TODO AuthService.Logout(req.user) do some clever stuff
-            return res.status(200).end();
-        } catch (e) {
-            logger.error('🔥 error %o', e);
-            return next(e);
-        }
+    route.post('/logout', middlewares.isAuth, (req: Request, res: Response) => {
+        return res.status(200).end();
     });
 };

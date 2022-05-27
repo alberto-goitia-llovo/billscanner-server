@@ -3,9 +3,11 @@ import cors from 'cors';
 import { OpticMiddleware } from '@useoptic/express-middleware';
 import routes from '@/api';
 import config from '@/config';
-import middlewares from '@/api/middlewares';
+import logRequest from '@/api/middlewares/logRequest';
 import 'express-async-errors';
+import { Container } from 'typedi';
 export default ({ app }: { app: express.Application }) => {
+    const logger: Utils.Logger = Container.get('logger');
     /**
      * Health Check endpoints
      * @TODO Explain why they are here
@@ -34,17 +36,10 @@ export default ({ app }: { app: express.Application }) => {
     // Transforms the raw string of req.body into json
     // app.use(middleware);
     app.use(express.json());
-    app.use(formatResponse)
+    app.use(logRequest);
 
 
     // Load API routes
-    // app.use(config.api.prefix, routes());
-    // app.use('/api', (req, res) => {
-    //     console.log("ESTOY EN APIII")
-    // })
-
-    //TODO: add JWT authentication middleware (signup and signin should not be affected)
-
     app.use(config.api.prefix, routes())
 
     // API Documentation
@@ -62,47 +57,41 @@ export default ({ app }: { app: express.Application }) => {
 
     /// error handlers
     app.use((err, req, res, next) => {
-        //global error handlers
-        //all errors will be handled here
-
-        if (err.constructor.name != 'Error') console.log('err', err) //only print if it's an unexpected error (something that really broke)
-
-        let message = err.name == "Error" ? err.message : "Something was wrong";
-        res.status(err.status || 500);
-        res.json({
-            error: {
-                message: message,
-                data: err
-            },
-        });
+        /**
+         * Handle 401 thrown by express-jwt library
+         */
+        if (err.name === 'UnauthorizedError') {
+            return res
+                .status(err.status)
+                .send({ message: err.message })
+                .end();
+        }
+        let handled_error = HANDLED_ERRORS[err.message]
+        if (handled_error) {
+            err.message = handled_error.message
+            err.status = handled_error.status
+        } else {
+            logger.error(err.message, err.stack)
+            err.status = 500;
+            err.message = "Something went wrong"
+        }
+        res.status(err.status)
+        res.json(err.message);
     });
-
 };
 
-/**
- * Interceptor of the res.json() method.
- * Overrides the response according to the format {status, data, message} 
- * @param req 
- * @param res 
- * @param next 
- */
-function formatResponse(req, res, next) {
-    // console.log('req', req)
-    const originJson = res.json
-    res.json = (data, a, b) => {
-        const fixedResponse = {
-            status: res.statusCode,
-            data: data?.error ? data.error.data : data,
-            message: data.error?.message || null
-        }
-        originJson.call(res, { ...fixedResponse })
+const HANDLED_ERRORS = {
+    //Auth errors
+    'User already exists': {
+        status: 409,
+        message: 'User already exists',
+    },
+    'User not registered': {
+        status: 403,
+        message: 'User not registered',
+    },
+    'Invalid password': {
+        status: 403,
+        message: 'Invalid password',
     }
-    next()
 }
-
-function middleware(req, res, next) {
-    console.log('req.body', req.body)
-    console.log('req.params', req.params)
-    next()
-}
-

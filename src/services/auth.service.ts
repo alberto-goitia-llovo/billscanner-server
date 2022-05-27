@@ -21,53 +21,40 @@ export default class AuthService {
     }
 
     public async SignUp(userInputDTO: IUserInputDTO): Promise<{ user: IUser; token: string }> {
-        try {
-            const salt = randomBytes(32);
-            this.logger.silly('Hashing password');
-            const hashedPassword = await argon2.hash(userInputDTO.password, { salt });
-            this.logger.silly('Creating user db record');
-            // const userRecord = await this.userModel.create({
-            //     ...userInputDTO,
-            //     salt: salt.toString('hex'),
-            //     password: hashedPassword,
-            // });
-            let new_user_data = {
-                email: userInputDTO.email,
-                name: userInputDTO.name,
-                password: hashedPassword,
-                salt: salt.toString('hex')
-            };
-            new_user_data['salt'] = salt.toString('hex');
-            new_user_data['password'] = hashedPassword;
-            const userRecord = await this.userModel.createNewUser(new_user_data)
-            this.logger.silly('Generating JWT');
-            const token = this.generateToken(userRecord);
-
-            if (!userRecord) {
-                throw new Error('User cannot be created');
-            }
-            // this.logger.silly('Sending welcome email');
-            // await this.mailer.SendWelcomeEmail(userRecord);
-
-            this.eventDispatcher.dispatch(events.user.signUp, { user: userRecord });
-
-            /**
-             * @TODO This is not the best way to deal with this
-             * There should exist a 'Mapper' layer
-             * that transforms data from layer to layer
-             * but that's too over-engineering for now
-             */
-            const user = userRecord.toObject();
-            Reflect.deleteProperty(user, 'password');
-            Reflect.deleteProperty(user, 'salt');
-            return { user, token };
-        } catch (e) {
-            this.errorHandler(e)
+        //Checking if user already exists
+        const existingUser = await this.userModel.findUser(userInputDTO.email);
+        if (existingUser) {
+            throw new Error("User already exists");
         }
+        const salt = randomBytes(32);
+        this.logger.silly('Hashing password');
+        const hashedPassword = await argon2.hash(userInputDTO.password, { salt });
+        this.logger.silly('Creating user db record');
+        let new_user_data = {
+            email: userInputDTO.email,
+            name: userInputDTO.name,
+            password: hashedPassword,
+            salt: salt.toString('hex')
+        };
+        new_user_data['salt'] = salt.toString('hex');
+        new_user_data['password'] = hashedPassword;
+        await this.userModel.createNewUser(new_user_data)
+        const userRecord = await this.userModel.findUser(userInputDTO.email);
+        if (!userRecord) {
+            throw new Error('Error creating user');
+        }
+        this.logger.silly('Generating JWT');
+        const token = this.generateToken(userRecord);
+
+        this.eventDispatcher.dispatch(events.user.signUp, { user: userRecord });
+        const user = userRecord;
+        delete user.password;
+        delete user.salt;
+        return { user, token };
     }
 
     public async SignIn(email: string, password: string): Promise<{ user: IUser; token: string }> {
-        const userRecord = await this.userModel.findOne(email);
+        const userRecord = await this.userModel.findUser(email);
         if (!userRecord) {
             throw new Error('User not registered');
         }
@@ -81,26 +68,15 @@ export default class AuthService {
             this.logger.silly('Generating JWT');
             const token = this.generateToken(userRecord);
 
-            const user = userRecord.toObject();
-            Reflect.deleteProperty(user, 'password');
-            Reflect.deleteProperty(user, 'salt');
-            /**
-             * Easy as pie, you don't need passport.js anymore :)
-             */
+            const user = userRecord;
+            delete user.password;
+            delete user.salt;
             return { user, token };
         } else {
-            throw new Error('Invalid Password');
+            throw new Error('Invalid password');
         }
     }
 
-    private errorHandler(err: any) {
-        if (handledErrorCodes[err?.code]?.message) {
-            throw new Error(handledErrorCodes[err?.code].message);
-        } else {
-            this.logger.log(err);
-            throw err;
-        }
-    }
 
     private generateToken(user) {
         const today = new Date();
