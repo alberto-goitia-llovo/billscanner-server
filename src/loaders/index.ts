@@ -14,8 +14,10 @@ export default async ({ expressApp }) => {
 
     await dependencyInjectorLoader({
         models: [
-            { name: 'userModel', model: require('../models/mysql/user.model').default },
+            { name: 'usersModel', model: require('../models/mysql/users.model').default },
             { name: 'billsModel', model: require('../models/mysql/bills.model').default },
+            { name: 'accountsModel', model: require('../models/mysql/accounts.model').default },
+            { name: 'categoriesModel', model: require('../models/mysql/categories.model').default },
         ],
     });
     Logger.info('✌️ Dependency Injector loaded');

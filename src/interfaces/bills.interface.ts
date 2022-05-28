@@ -1,5 +1,3 @@
-import { Request } from 'express';
-
 export interface IBill {
     bill_id?: number,
     date: Date,

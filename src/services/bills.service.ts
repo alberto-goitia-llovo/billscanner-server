@@ -11,7 +11,7 @@ export default class BillsService {
     }
 
     public async findAllBills(user_id: number | null): Promise<IBill[] | []> {
-        return this.billsModel.findAllBills(user_id);
+        return this.billsModel.findUserBills(user_id);
     }
 
     public async upsertBills(bills: IBill[]): Promise<IBill[] | []> {

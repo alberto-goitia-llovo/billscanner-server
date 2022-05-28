@@ -32,6 +32,7 @@
     "@types/mysql": "^2.15.21",
     "@zerollup/ts-transform-paths": "^1.7.18",
     "express": "^4.17.1",
+    "luxon": "^2.4.0",
     "mysql": "^2.18.1",
     "reflect-metadata": "^0.1.13",
     "tsc-alias": "^1.6.7",

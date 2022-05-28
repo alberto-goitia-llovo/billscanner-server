@@ -14,7 +14,7 @@ const handledErrorCodes = {
 @Service()
 export default class AuthService {
     constructor(
-        @Inject('userModel') private userModel: Models.UserModel,
+        @Inject('usersModel') private usersModel: Models.UsersModel,
         @Inject('logger') private logger: Utils.Logger,
         @EventDispatcher() private eventDispatcher: EventDispatcherInterface,
     ) {
@@ -22,7 +22,7 @@ export default class AuthService {
 
     public async SignUp(userInputDTO: IUserInputDTO): Promise<{ user: IUser; token: string }> {
         //Checking if user already exists
-        const existingUser = await this.userModel.findUser(userInputDTO.email);
+        const existingUser = await this.usersModel.findUser(userInputDTO.email);
         if (existingUser) {
             throw new Error("User already exists");
         }
@@ -38,8 +38,8 @@ export default class AuthService {
         };
         new_user_data['salt'] = salt.toString('hex');
         new_user_data['password'] = hashedPassword;
-        await this.userModel.createNewUser(new_user_data)
-        const userRecord = await this.userModel.findUser(userInputDTO.email);
+        await this.usersModel.createNewUser(new_user_data)
+        const userRecord = await this.usersModel.findUser(userInputDTO.email);
         if (!userRecord) {
             throw new Error('Error creating user');
         }
@@ -50,11 +50,12 @@ export default class AuthService {
         const user = userRecord;
         delete user.password;
         delete user.salt;
+        this.logger.info(`User ${user.email} signed up successfully`);
         return { user, token };
     }
 
     public async SignIn(email: string, password: string): Promise<{ user: IUser; token: string }> {
-        const userRecord = await this.userModel.findUser(email);
+        const userRecord = await this.usersModel.findUser(email);
         if (!userRecord) {
             throw new Error('User not registered');
         }
@@ -71,6 +72,7 @@ export default class AuthService {
             const user = userRecord;
             delete user.password;
             delete user.salt;
+            this.logger.info(`User ${user.email} signed in successfully`);
             return { user, token };
         } else {
             throw new Error('Invalid password');
@@ -97,8 +99,8 @@ export default class AuthService {
         return jwt.sign(
             {
                 _id: user._id, // We are gonna use this in the middleware 'isAuth'
-                role: user.role,
                 name: user.name,
+                email: user.email,
                 exp: exp.getTime() / 1000,
             },
             config.jwtSecret,

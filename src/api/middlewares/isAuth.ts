@@ -2,6 +2,7 @@ import jwt from 'express-jwt';
 import config from '@/config';
 import { getTokenFromHeader } from '@/utils/token.util';
 
+//Decodes and saves the token payload in req.token. Also checks if it's a valid token
 const isAuth = jwt({
     secret: config.jwtSecret, // The _secret_ to sign the JWTs
     algorithms: [config.jwtAlgorithm], // JWT Algorithm

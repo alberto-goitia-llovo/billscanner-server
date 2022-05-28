@@ -1,11 +1,11 @@
 import { keys } from 'ts-transformer-keys';
 import db from '@/utils/mysql.connector';
 import { IBill } from '@/interfaces/bills.interface';
-import { bracketsToParenthesis, arrayString, updateOnDupString } from '@/utils/jsonToMySql';
+import { fieldsFromArray, valuesFromArrayAndFields, updateOnDupString } from '@/utils/jsonToMySql';
 const TABLE = 'bill';
 
 export default new class BillsModel {
-    public async findAllBills(user_id: number | null): Promise<IBill[] | []> {
+    public async findUserBills(user_id: number | null): Promise<IBill[] | []> {
         try {
             let query = user_id ? `SELECT * FROM ${TABLE} WHERE user_id = ${user_id}` : `SELECT * FROM ${TABLE}`;
             const result = await db.executeStatement<any>(query);
@@ -21,9 +21,9 @@ export default new class BillsModel {
             let params = keys<IBill>();
             console.log('params', params)
             let query = `
-            INSERT INTO ${TABLE} ${bracketsToParenthesis(params)}
+            INSERT INTO ${TABLE} ${fieldsFromArray(params)}
             VALUES
-            ${arrayString(bills, params)}
+            ${valuesFromArrayAndFields(bills, params)}
             ON DUPLICATE KEY UPDATE
             ${updateOnDupString(params)};
             `

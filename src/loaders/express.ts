@@ -50,22 +50,12 @@ export default ({ app }: { app: express.Application }) => {
     /// catch 404 and forward to error handler
     app.use((req, res, next) => {
         const err = new Error('Not Found');
-        console.log("NOT FOUND")
         err['status'] = 404;
         next(err);
     });
 
     /// error handlers
     app.use((err, req, res, next) => {
-        /**
-         * Handle 401 thrown by express-jwt library
-         */
-        if (err.name === 'UnauthorizedError') {
-            return res
-                .status(err.status)
-                .send({ message: err.message })
-                .end();
-        }
         let handled_error = HANDLED_ERRORS[err.message]
         if (handled_error) {
             err.message = handled_error.message
@@ -76,7 +66,7 @@ export default ({ app }: { app: express.Application }) => {
             err.message = "Something went wrong"
         }
         res.status(err.status)
-        res.json(err.message);
+        res.json(err);
     });
 };
 
@@ -93,5 +83,9 @@ const HANDLED_ERRORS = {
     'Invalid password': {
         status: 403,
         message: 'Invalid password',
+    },
+    'No authorization token was found': {
+        status: 401,
+        message: 'Credentials are required',
     }
 }
