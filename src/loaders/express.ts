@@ -49,7 +49,7 @@ export default ({ app }: { app: express.Application }) => {
 
     /// catch 404 and forward to error handler
     app.use((req, res, next) => {
-        const err = new Error('Not Found');
+        const err = new Error('Not found');
         err['status'] = 404;
         next(err);
     });
@@ -57,16 +57,17 @@ export default ({ app }: { app: express.Application }) => {
     /// error handlers
     app.use((err, req, res, next) => {
         let handled_error = HANDLED_ERRORS[err.message]
+        console.log('handled_error', handled_error)
         if (handled_error) {
-            err.message = handled_error.message
             err.status = handled_error.status
+            err.message = handled_error.message
         } else {
             logger.error(err.message, err.stack)
             err.status = 500;
             err.message = "Something went wrong"
         }
         res.status(err.status)
-        res.json(err);
+        res.json({ status: err.status, message: err.message })
     });
 };
 
@@ -87,5 +88,10 @@ const HANDLED_ERRORS = {
     'No authorization token was found': {
         status: 401,
         message: 'Credentials are required',
+    },
+    //Not Found
+    'Not found': {
+        status: 404,
+        message: 'Not found',
     }
 }

@@ -10,4 +10,13 @@ export interface IBill {
     user_id: number,
 };
 
-export interface IBillDTO extends Array<IBill> { };
+export interface IBillDTO {
+    date: Date,
+    concept: string,
+    amount: number,
+    details: string | null,
+    category_name: number,
+    bill_type: string,
+    account_name: string,
+    user_id: number,
+};

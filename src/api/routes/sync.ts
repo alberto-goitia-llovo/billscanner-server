@@ -8,7 +8,7 @@ export default (app: Router) => {
     const syncService = Container.get(SyncService);
     app.use('/sync', route);
 
-    route.get('/getUserData', middleware.isAuth, middleware.attachCurrentUser, async (req: Request, res: Response) => {
+    route.get('/getSyncData', middleware.isAuth, middleware.attachCurrentUser, async (req: Request, res: Response) => {
         let data = await syncService.getUserData(req.currentUser._id)
         return res.status(200).json(data);
     });
