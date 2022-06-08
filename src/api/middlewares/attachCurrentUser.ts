@@ -9,22 +9,14 @@ import { Logger } from 'winston';
  */
 const attachCurrentUser = async (req, res, next) => {
     const Logger: Logger = Container.get('logger');
-    try {
-        console.log('req.token', req.token)
-        const UsersModel = Container.get('usersModel') as Models.UsersModel;
-        const userRecord = await UsersModel.findUserById(req.token._id);
-        if (!userRecord) {
-            return res.sendStatus(401);
-        }
-        const currentUser = userRecord;
-        Reflect.deleteProperty(currentUser, 'password');
-        Reflect.deleteProperty(currentUser, 'salt');
-        req.currentUser = currentUser;
-        return next();
-    } catch (e) {
-        Logger.error('🔥 Error attaching user to req: %o', e);
-        return next(e);
-    }
+    const UsersModel = Container.get('usersModel') as Models.UsersModel;
+    const userRecord = await UsersModel.findUserById(req.token._id);
+    if (!userRecord) throw new Error(`User ${req.token._id} not found`);
+    const currentUser = userRecord;
+    Reflect.deleteProperty(currentUser, 'password');
+    Reflect.deleteProperty(currentUser, 'salt');
+    req.currentUser = currentUser;
+    return next();
 };
 
 export default attachCurrentUser;

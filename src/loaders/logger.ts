@@ -51,7 +51,7 @@ function consoleFormat() {
         const LEVEL = info.level
         const MESSAGE = info.message
         const DATA = info.data ? util.inspect(info.data, false, null) : ''
-        return `${START} ${TIMESTAMP} [${LEVEL}] ${MESSAGE} ${DATA} ${END}`
+        return `${START} ${TIMESTAMP} [${LEVEL}] ${MESSAGE} ${DATA} ${END} ${info.stack ? `\n:${info.stack}` : ''}`
     }
 }
 

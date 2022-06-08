@@ -20,13 +20,3 @@ export function getTokenFromHeader(req) {
     }
     return null;
 };
-
-/**
- * Retrieves user information from token payload
- * @param token 
- * @returns 
- */
-export function getUserDataFromJWT(token) {
-    console.log('token', token)
-    return {};
-}

@@ -10,7 +10,7 @@ export default (app: Router) => {
 
     route.post('/upload', async (req: Request, res: Response) => {
         const billsService = Container.get(BillsService);
-        await billsService.upsertBills(req.body.bills)
+        await billsService.upsertBills(1, req.body.bills)
         return res.status(200).json("TODO OK");
     });
 

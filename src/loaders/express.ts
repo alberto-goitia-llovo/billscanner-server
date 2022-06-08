@@ -56,13 +56,16 @@ export default ({ app }: { app: express.Application }) => {
 
     /// error handlers
     app.use((err, req, res, next) => {
+        // console.log('err', err)
+        // logger.info('eroooor')
+        // logger.error(err)
         let handled_error = HANDLED_ERRORS[err.message]
-        console.log('handled_error', handled_error)
+        // console.log('handled_error', handled_error)
         if (handled_error) {
             err.status = handled_error.status
             err.message = handled_error.message
         } else {
-            logger.error(err.message, err.stack)
+            logger.error(err)
             err.status = 500;
             err.message = "Something went wrong"
         }

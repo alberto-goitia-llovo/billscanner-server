@@ -4,22 +4,23 @@ USE billscanner;
 INSERT INTO category (name, type)
 VALUES 
 -- Income categories
-    ('Salary', 'income'),
-    ('Gift', 'income'),
-    ('Salary bonus', 'income'),
-    ('Other', 'income'),
+    ('SALARY', 'income'),
+    ('GIFT', 'income'),
+    ('SALARY BONUS', 'income'),
+    ('OTHER', 'income'),
 -- Expense categories
-    ('Food', 'expense'),
-    ('Transport', 'expense'),
-    ('Entertainment', 'expense'),
-    ('Clothing', 'expense'),
-    ('Home', 'expense'),
-    ('Health', 'expense'),
-    ('Education', 'expense'),
-    ('Gift', 'expense'),
-    ('Other', 'expense'),
+    ('FOOD', 'expense'),
+    ('TRANSPORT', 'expense'),
+    ('ENTERTAINMENT', 'expense'),
+    ('LEISURE', 'expense'),
+    ('CLOTHING', 'expense'),
+    ('HOME', 'expense'),
+    ('HEALTH', 'expense'),
+    ('EDUCATION', 'expense'),
+    ('GIFT', 'expense'),
+    ('OTHER', 'expense'),
 -- Transfer categories
-    ('Transfer', 'transfer');
+    ('TRANSFER', 'transfer');
 -- Repayment categories
 -- For each expense category insert a repayment category (all expenses can be repaid)
 INSERT INTO category (name, type)

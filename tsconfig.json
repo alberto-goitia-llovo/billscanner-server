@@ -1,6 +1,6 @@
 {
     "ts-node": {
-        "compiler": "ttypescript"
+        "compiler": "typescript"
     },
     "compilerOptions": {
         "module": "commonjs",
@@ -13,11 +13,7 @@
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "plugins": [
-            {
-                "transform": "ts-transformer-keys/transformer"
-            }
-        ],
+        "plugins": [],
         "paths": {
             "@/*": [
                 "./src/*"
