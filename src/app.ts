@@ -1,10 +1,8 @@
-import 'reflect-metadata'; // We need this in order to use @Decorators
-
 import config from './config';
 
 import express from 'express';
 
-import Logger from './loaders/logger';
+import Logger from './services/logger.service';
 
 async function startServer() {
     const app = express();
@@ -31,15 +29,3 @@ async function startServer() {
 }
 
 startServer();
-
-// import express from 'express';
-
-// const app = express();
-// const port = 3000;
-// app.get('/', (req, res) => {
-//     res.send('The sedulous hyena ate the antelope!');
-// });
-
-// app.listen(port, () => {
-//     console.log(`server is listening on ${port}`);
-// });

@@ -1,5 +1,6 @@
 import { Container } from 'typedi';
-import { Logger } from 'winston';
+import Logger from '@/services/logger.service';
+import UsersModel from '@/models/mysql/users.model';
 
 /**
  * Attach user to req.currentUser
@@ -8,10 +9,8 @@ import { Logger } from 'winston';
  * @param {*} next  Express next Function
  */
 const attachCurrentUser = async (req, res, next) => {
-    const Logger: Logger = Container.get('logger');
-    const UsersModel = Container.get('usersModel') as Models.UsersModel;
     const userRecord = await UsersModel.findUserById(req.token._id);
-    if (!userRecord) throw new Error(`User ${req.token._id} not found`);
+    if (!userRecord) throw new Error(`User not found`);
     const currentUser = userRecord;
     Reflect.deleteProperty(currentUser, 'password');
     Reflect.deleteProperty(currentUser, 'salt');

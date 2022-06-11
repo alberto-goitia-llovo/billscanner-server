@@ -5,31 +5,24 @@ import { fieldsFromArray, valuesFromArrayAndFields, updateOnDupString } from '@/
 const TABLE = 'account';
 
 export default new class AccountModel {
-    public async createNewAccount(user_id, name): Promise<any> {
-        try {
-            let statement = `INSERT INTO ${TABLE} (user_id, name)\nVALUES\n(${user_id}, ${name})`;
-            return await db.executeStatement<any>(statement);
-        } catch (error) {
-            throw new Error('failed to create new account');
+    public async createNewAccounts(user_id, names: string[]): Promise<any> {
+        let VALUES = `\nVALUES`;
+        for (let i = 0; i < names.length; i++) {
+            VALUES += `\n('${user_id}', '${names[i]}')`;
+            if (i < names.length - 1) VALUES += `,`;
         }
+        let statement = `INSERT INTO ${TABLE} (user_id, name)${VALUES};`;
+        console.log('statement', statement)
+        return db.executeStatement<any>(statement);
     };
 
     public async findUserAccounts(user_id): Promise<any> {
-        try {
-            let query = `SELECT * FROM ${TABLE} WHERE user_id = '${user_id}'`;
-            const result = await db.executeStatement<any>(query);
-            return result;
-        } catch (error) {
-            throw new Error('failed to find user accounts');
-        }
+        let query = `SELECT * FROM ${TABLE} WHERE user_id = '${user_id}'`;
+        return db.executeStatement<any>(query);
     }
 
     public async deleteAccount(account_id): Promise<any> {
-        try {
-            let query = `DELETE FROM ${TABLE} WHERE _id = '${account_id}'`;
-            return await db.executeStatement<any>(query);
-        } catch (error) {
-            throw new Error('failed to delete account');
-        }
+        let query = `DELETE FROM ${TABLE} WHERE _id = '${account_id}'`;
+        return db.executeStatement<any>(query);
     }
 }

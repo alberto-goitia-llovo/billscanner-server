@@ -1,35 +1,25 @@
-import 'reflect-metadata'; // We need this in order to use @Decorators
-import { Service, Inject, Container } from 'typedi';
 import jwt from 'jsonwebtoken';
 import config from '@/config';
 import argon2 from 'argon2';
 import { randomBytes } from 'crypto';
 import { IUser, IUserInputDTO } from '@/interfaces/IUser';
-import { EventDispatcher, EventDispatcherInterface } from '@/decorators/eventDispatcher';
-import events from '@/subscribers/events';
+import UsersModel from '@/models/mysql/users.model';
+import Logger from '@/services/logger.service';
 
 const handledErrorCodes = {
     11000: { message: "User already exists" }
 }
-@Service()
-export default class AuthService {
-    constructor(
-        @Inject('usersModel') private usersModel: Models.UsersModel,
-        @Inject('logger') private logger: Utils.Logger,
-        @EventDispatcher() private eventDispatcher: EventDispatcherInterface,
-    ) {
-    }
-
+export default new class AuthService {
     public async SignUp(userInputDTO: IUserInputDTO): Promise<{ user: IUser; token: string }> {
         //Checking if user already exists
-        const existingUser = await this.usersModel.findUser(userInputDTO.email);
+        const existingUser = await UsersModel.findUser(userInputDTO.email);
         if (existingUser) {
             throw new Error("User already exists");
         }
         const salt = randomBytes(32);
-        this.logger.silly('Hashing password');
+        Logger.silly('Hashing password');
         const hashedPassword = await argon2.hash(userInputDTO.password, { salt });
-        this.logger.silly('Creating user db record');
+        Logger.silly('Creating user db record');
         let new_user_data = {
             email: userInputDTO.email,
             name: userInputDTO.name,
@@ -38,41 +28,40 @@ export default class AuthService {
         };
         new_user_data['salt'] = salt.toString('hex');
         new_user_data['password'] = hashedPassword;
-        await this.usersModel.createNewUser(new_user_data)
-        const userRecord = await this.usersModel.findUser(userInputDTO.email);
+        await UsersModel.createNewUser(new_user_data)
+        const userRecord = await UsersModel.findUser(userInputDTO.email);
         if (!userRecord) {
             throw new Error('Error creating user');
         }
-        this.logger.silly('Generating JWT');
+        Logger.silly('Generating JWT');
         const token = this.generateToken(userRecord);
 
-        this.eventDispatcher.dispatch(events.user.signUp, { user: userRecord });
         const user = userRecord;
         delete user.password;
         delete user.salt;
-        this.logger.info(`User ${user.email} signed up successfully`);
+        Logger.info(`User ${user.email} signed up successfully`);
         return { user, token };
     }
 
     public async SignIn(email: string, password: string): Promise<{ user: IUser; token: string }> {
-        const userRecord = await this.usersModel.findUser(email);
+        const userRecord = await UsersModel.findUser(email);
         if (!userRecord) {
             throw new Error('User not registered');
         }
         /**
          * We use verify from argon2 to prevent 'timing based' attacks
          */
-        this.logger.silly('Checking password');
+        Logger.silly('Checking password');
         const validPassword = await argon2.verify(userRecord.password, password);
         if (validPassword) {
-            this.logger.silly('Password is valid!');
-            this.logger.silly('Generating JWT');
+            Logger.silly('Password is valid!');
+            Logger.silly('Generating JWT');
             const token = this.generateToken(userRecord);
 
             const user = userRecord;
             delete user.password;
             delete user.salt;
-            this.logger.info(`User ${user.email} signed in successfully`);
+            Logger.info(`User ${user.email} signed in successfully`);
             return { user, token };
         } else {
             throw new Error('Invalid password');
@@ -95,7 +84,7 @@ export default class AuthService {
          * because it doesn't have _the secret_ to sign it
          * more information here: https://softwareontheroad.com/you-dont-need-passport
          */
-        this.logger.silly(`Sign JWT for userId: ${user._id}`);
+        Logger.silly(`Sign JWT for userId: ${user._id}`);
         return jwt.sign(
             {
                 _id: user._id, // We are gonna use this in the middleware 'isAuth'

@@ -9,7 +9,6 @@ import { Logger } from 'winston';
 const route = Router();
 
 export default (app: Router) => {
-    const authServiceInstance = Container.get(AuthService);
 
     app.use('/auth', route);
     route.post(
@@ -22,7 +21,7 @@ export default (app: Router) => {
             }),
         }),
         async (req: Request, res: Response) => {
-            const { user, token } = await authServiceInstance.SignUp(req.body as IUserInputDTO);
+            const { user, token } = await AuthService.SignUp(req.body as IUserInputDTO);
             return res.status(201).json({ user, token });
         },
     );
@@ -37,7 +36,7 @@ export default (app: Router) => {
         }),
         async (req: Request, res: Response) => {
             const { email, password } = req.body;
-            const { user, token } = await authServiceInstance.SignIn(email, password);
+            const { user, token } = await AuthService.SignIn(email, password);
             return res.status(200).json({ user, token });
         },
     );

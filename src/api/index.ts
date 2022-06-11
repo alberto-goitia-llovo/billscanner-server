@@ -1,12 +1,11 @@
 import { Router } from 'express';
 import config from '@/config'
 
-import auth from './routes/auth';
-import test from './routes/test';
-import bills from './routes/bills';
-import sync from './routes/sync';
-// import user from './routes/user';
-// import agendash from './routes/agendash';
+import auth from './routes/auth.route';
+import test from './routes/test.route';
+import bills from './routes/bills.route';
+import sync from './routes/sync.route';
+import accounts from './routes/accounts.route';
 
 // guaranteed to get dependencies
 export default () => {
@@ -19,5 +18,6 @@ export default () => {
     auth(app);
     bills(app);
     sync(app);
+    accounts(app);
     return app
 }

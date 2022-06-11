@@ -1,6 +1,4 @@
 import { createPool, Pool } from 'mysql';
-
-
 export default new class MySqlConnector {
     private pool: Pool;
 

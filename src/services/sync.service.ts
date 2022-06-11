@@ -1,22 +1,15 @@
-import 'reflect-metadata'; // We need this in order to use @Decorators
-import { Service, Inject } from 'typedi';
-
-@Service()
-export default class SyncService {
-    constructor(
-        @Inject('billsModel') private billsModel: Models.Bills,
-        @Inject('accountsModel') private accountsModel: Models.Accounts,
-        @Inject('categoriesModel') private categoriesModel: Models.Categories,
-        @Inject('logger') private logger: Utils.Logger,
-    ) {
-    }
+import BillsModel from '@/models/mysql/bills.model';
+import AccountsModel from '@/models/mysql/accounts.model';
+import CategoriesModel from '@/models/mysql/categories.model';
+import Logger from '@/services/logger.service';
+export default new class SyncService {
 
     public async getUserData(user_id: number): Promise<any> {
         let promises = [];
         //TODO: it's more efficient to get all at once in the same query using JOINS
-        promises.push(this.billsModel.findUserBills(user_id));
-        promises.push(this.accountsModel.findUserAccounts(user_id));
-        promises.push(this.categoriesModel.findUserCategories(user_id));
+        promises.push(BillsModel.findUserBills(user_id));
+        promises.push(AccountsModel.findUserAccounts(user_id));
+        promises.push(CategoriesModel.findUserCategories(user_id));
         let data = await Promise.all(promises);
         return {
             bills: data[0],

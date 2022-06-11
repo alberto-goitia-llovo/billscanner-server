@@ -11,12 +11,11 @@ export interface IBill {
 };
 
 export interface IBillDTO {
-    date: Date,
+    date: string,
     concept: string,
     amount: number,
     details: string | null,
-    category_name: number,
+    category: number,
     bill_type: string,
-    account_name: string,
-    user_id: number,
+    account: string,
 };

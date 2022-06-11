@@ -1,20 +1,16 @@
 import 'reflect-metadata'; // We need this in order to use @Decorators
 import { Service, Inject } from 'typedi';
 import { IBillDTO, IBill } from '@/interfaces/bills.interface';
+import BillsModel from '@/models/mysql/bills.model';
 
-@Service()
-export default class BillsService {
-    constructor(
-        @Inject('billsModel') private billsModel: Models.Bills,
-        @Inject('logger') private logger: Utils.Logger,
-    ) {
-    }
+export default new class BillsService {
 
     public async findAllBills(user_id: number | null): Promise<IBill[] | []> {
-        return this.billsModel.findUserBills(user_id);
+        return BillsModel.findUserBills(user_id);
     }
 
     public async upsertBills(user_id: number, bills: IBillDTO[]): Promise<IBill[] | []> {
-        return this.billsModel.upsertBills(user_id, bills);
+        console.log('bills', bills)
+        return BillsModel.upsertBills(user_id, bills);
     }
 }

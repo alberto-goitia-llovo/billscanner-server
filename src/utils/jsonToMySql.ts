@@ -35,8 +35,9 @@ export function valuesFromArrayAndFields(array: { [key: string]: any }[], fields
  */
 export function updateOnDupString(columns) {
     let string = '';
-    for (let col of columns) {
-        string += ` ${col} = VALUES(${col}),\n`;
+    for (let i = 0; i < columns.length; i++) {
+        string += `\n ${columns[i]} = VALUES(${columns[i]})`;
+        if (i < columns.length - 1) string += ',';
     }
     return string;
 }
